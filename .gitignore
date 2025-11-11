@@ -1,0 +1,16 @@
+# Imagens e arquivos de backup
+*.jpeg
+*.jpg
+*.png
+Backup.html
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Arquivos de configuração locais
+.env
+.env.local

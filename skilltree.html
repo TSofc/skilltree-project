@@ -101,7 +101,7 @@ let offset = {x: canvas.width/2, y: canvas.height/2};
 const MINI_Y = LINKLEN + SUBLEN*Math.cos(ANGLE) + 2 * SKILL_RADIUS + 70;
 
 const NODES = [
-  { id: 1, name: "Rise of Jogador", jp:5, desc: "Nó central da árvore de habilidades.", x: 0, y: 0, radius: MAIN_RADIUS, parent: null },
+  { id: 1, name: "Rise of Jogador", jp:5, desc: "Aqui começa sua jornada!", x: 0, y: 0, radius: MAIN_RADIUS, parent: null },
   { id: 2, name: "Uma Nova Jornada", jp:5, desc: "<b>Descrição:</b> Começando sua jornada como um amante dos alimentos, você passa a entender melhor como eles são feitos, reconhece os sabores e aromas e com isso consegue determinar o que é mais nutritivo para você!<br><br><b>Efeito:</b> <em>Todos os alimentos consumidos por você, que recuperam fome e sede, irão recuperar 10% a mais que o normal.</em>", x: 0, y: LINKLEN, radius: SKILL_RADIUS, parent: 1, image: "https://i.imgur.com/KEn1dNY.jpeg" },
   { id: 3, name: "Chef Pokémon", jp:3, desc: "<b>Descrição:</b> Este é o ponto em que você decidiu dedicar a sua especialidade em cozinha para os tão amados Pokémons! A partir de agora suas receitas se voltarão para o mundo dos monstrinhos onde você vai dominar a arte de cozinhar e conhecer o paladar dos Pokémons!<br><br><b>Efeito:</b> <em>Permite criar receitas especiais para Pokémons.</em>", x: -SUBLEN*Math.sin(ANGLE), y: LINKLEN + SUBLEN*Math.cos(ANGLE), radius: SKILL_RADIUS, parent: 2, image: "https://i.imgur.com/zmTGk6p.jpeg" },
   { id: 4, name: "Chef Treinador", jp:3, desc: "<b>Descrição:</b> Você optou por continuar sua jornada culinária voltada para os gostos humanos! Agora a árdua estrada de agradar o paladar dos treinadores será sua! Prepare-se para enfrentar desafios incríveis e se tornar o Chef mais amado dos treinadores!<br><br><b>Efeito:</b> <em>Permite criar receitas especiais para humanos.</em>", x:  SUBLEN*Math.sin(ANGLE), y: LINKLEN + SUBLEN*Math.cos(ANGLE), radius: SKILL_RADIUS, parent: 2, image: "https://i.imgur.com/LS6FNHn.jpeg" },
@@ -494,29 +494,44 @@ function openSkillWindow(node,pos){
   zoomNodeId=node.id;
   const win = document.getElementById('skillWindow');
   win.style.display='block';
-  document.getElementById('skillTitle').style.display='block';
-  document.getElementById('skillTitle').textContent=node.name||"Skill";
-  document.getElementById('skillJP').style.display='inline';
-  document.getElementById('skillJP').textContent=(node.jp||"") + " JP";
-  document.getElementById('skillDesc').style.display='block';
-  document.getElementById('skillDesc').innerHTML=node.desc;
-  document.getElementById('skillLinha').style.display='block';
-  document.getElementById('msgCentral').style.display='none';
-  const btn=document.getElementById('btnUnlock');
-  let learned = haveLearned(node.id);
-  let canLearn = canUnlock(node.id);
-  document.getElementById('skillLearned').style.display=learned?"block":"none";
-  document.getElementById('skillLearned').textContent=learned?"Habilidade já aprendida!":"";
-  btn.style.display=learned?"none":"inline-block";
-  btn.disabled = !canLearn;
-  btn.onclick=()=>{
-    nodeToUnlock=node.id;
-    document.getElementById('confirmModal').style.display='block';
-    interactionBlocked=true;
-    confirmationOpen=true;
-    document.getElementById('btnCloseSkill').disabled = true;
-    document.getElementById('confirmText').textContent = `Deseja aprender "${node.name}" gastando ${node.jp} JP?`;
-  };
+  
+  // Tratamento especial para o nó principal (id: 1)
+  if(node.id === 1) {
+    document.getElementById('skillTitle').style.display='none';
+    document.getElementById('skillJP').style.display='none';
+    document.getElementById('skillDesc').style.display='none';
+    document.getElementById('skillLinha').style.display='none';
+    document.getElementById('skillLearned').style.display='none';
+    document.getElementById('msgCentral').style.display='flex';
+    document.getElementById('msgCentral').textContent = node.desc;
+    document.getElementById('btnUnlock').style.display='none';
+  } else {
+    // Comportamento normal para os outros nós
+    document.getElementById('skillTitle').style.display='block';
+    document.getElementById('skillTitle').textContent=node.name||"Skill";
+    document.getElementById('skillJP').style.display='inline';
+    document.getElementById('skillJP').textContent=(node.jp||"") + " JP";
+    document.getElementById('skillDesc').style.display='block';
+    document.getElementById('skillDesc').innerHTML=node.desc;
+    document.getElementById('skillLinha').style.display='block';
+    document.getElementById('msgCentral').style.display='none';
+    const btn=document.getElementById('btnUnlock');
+    let learned = haveLearned(node.id);
+    let canLearn = canUnlock(node.id);
+    document.getElementById('skillLearned').style.display=learned?"block":"none";
+    document.getElementById('skillLearned').textContent=learned?"Habilidade já aprendida!":"";
+    btn.style.display=learned?"none":"inline-block";
+    btn.disabled = !canLearn;
+    btn.onclick=()=>{
+      nodeToUnlock=node.id;
+      document.getElementById('confirmModal').style.display='block';
+      interactionBlocked=true;
+      confirmationOpen=true;
+      document.getElementById('btnCloseSkill').disabled = true;
+      document.getElementById('confirmText').textContent = `Deseja aprender "${node.name}" gastando ${node.jp} JP?`;
+    };
+  }
+  
   let scale=popupScaleFinal;
   let cx=getNodeCenter(node).x;
   let cy=getNodeCenter(node).y;

@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "skilltree-project",
+  "builds": [
+    {
+      "src": "skilltree.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/skilltree.html"
+    }
+  ]
+}
